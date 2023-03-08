@@ -179,7 +179,7 @@ class TextDecoderANE(TextDecoder):
         x = x.permute(0,2,3,1).squeeze(0)
 
         #logits = (x @ torch.transpose(self.token_embedding.weight.to(x.dtype), 0, 1)).float()
-        logits = torch.einsum('bds,sde->bde', x, self.token_embedding.weight.to(x.dtype).transpose(0,1)[:,None,:])
+        logits = torch.einsum('bid,jd->bij', x, self.token_embedding.weight.to(x.dtype))
 
         return logits
 
