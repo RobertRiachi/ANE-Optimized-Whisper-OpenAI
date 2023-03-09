@@ -178,8 +178,9 @@ class TextDecoderANE(TextDecoder):
         # Reformat back from ANE
         x = x.permute(0,2,3,1).squeeze(0)
 
-        #logits = (x @ torch.transpose(self.token_embedding.weight.to(x.dtype), 0, 1)).float()
-        logits = torch.einsum('bid,jd->bij', x, self.token_embedding.weight.to(x.dtype))
+        # ANE can only load tensors with dim size of at most 16,384 - whisper uses 51,865 tokens so we need to compute in chunks
+        splits = self.token_embedding.weight.split(self.token_embedding.weight.shape[0]//11, dim=0)
+        logits = torch.cat([torch.einsum('bid,jd->bij', x, split) for split in splits]).view(*x.shape[:2], -1)
 
         return logits
 
