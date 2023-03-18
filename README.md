@@ -17,3 +17,10 @@ sudo apt update && sudo apt install ffmpeg
 pip install openai-whisper
 pip install git+https://github.com/apple/ml-ane-transformers.git
 ```
+
+# Converting to Coreml
+
+You can modify the convert_to_coreml code to specify if you want a quantized model, by default it's set to False
+```
+python convert_to_coreml.py
+```
